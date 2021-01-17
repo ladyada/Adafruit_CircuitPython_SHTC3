@@ -39,10 +39,6 @@ import time
 import adafruit_bus_device.i2c_device as i2c_device
 
 
-# include "Arduino.h"
-# include <Adafruit_I2CDevice.h>
-# include <Adafruit_Sensor.h>
-
 _SHTC3_DEFAULT_ADDR = 0x70  # SHTC3 I2C Address
 _SHTC3_NORMAL_MEAS_TFIRST_STRETCH = (
     0x7CA2  # Normal measurement, temp first with Clock Stretch Enabled
@@ -93,7 +89,7 @@ class SHTC3:
         self.sleeping = False
         self.reset()
         if self._chip_id & 0x083F != _SHTC3_CHIP_ID:
-            raise RuntimeError("Failed to find an ICM20X sensor - check your wiring!")
+            raise RuntimeError("Failed to find an SHTC3 sensor - check your wiring!")
 
     def _write_command(self, command):
         self._buffer[0] = command >> 8
@@ -103,7 +99,7 @@ class SHTC3:
             i2c.write(self._buffer, start=0, end=2)
 
     @property
-    def _chip_id(self):  #   readCommand(SHTC3_READID, data, 3);
+    def _chip_id(self):
         self._buffer[0] = _SHTC3_READID >> 8
         self._buffer[1] = _SHTC3_READID & 0xFF
 
@@ -139,7 +135,6 @@ class SHTC3:
         time.sleep(0.001)
         self._cached_sleep = sleep_enabled
 
-    # lowPowerMode(bool readmode) { _lpMode = readmode
 
     @property
     def low_power(self):
